@@ -25,7 +25,7 @@ RUN buildDeps=" \
        done \
     && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
     && cd /tmp/memcache/ \
-    && git reset --hard fdbd46bbc6f53ed6e024521895e142cbfc9b3340 \
+    && git reset --hard 4991c2f \
     && phpize \
     && ./configure && make && make install \
     && rm -rf /tmp/memcache/ \
