@@ -4,6 +4,12 @@ MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
 ENV XDEBUG_VERSION 2.5.0
 
+ENV MEMCACHE_REVISION 'df7735e'
+
+
+# Install additional packages
+RUN apt-get update && apt-get install -y git msmtp-mta openssh-client --no-install-recommends && rm -r /var/lib/apt/lists/*
+
 # Install php extensions
 RUN buildDeps=" \
         freetds-dev \
@@ -17,6 +23,7 @@ RUN buildDeps=" \
         libkrb5-dev \
         libldap2-dev \
         libmcrypt-dev \
+        libmemcached-dev \
         libpng12-dev \
         libpq-dev \
         libpspell-dev \
@@ -50,17 +57,19 @@ RUN buildDeps=" \
     && docker-php-ext-configure ldap --with-ldap-sasl \
     && docker-php-ext-install $phpModules \
     && printf "\n" | pecl install amqp \
-    && printf "\n" | pecl install memcache \
     && pecl install mongodb \
     && pecl install redis \
     && for ext in $phpModules; do \
            rm -f /usr/local/etc/php/conf.d/docker-php-ext-$ext.ini; \
        done \
+    && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
+    && cd /tmp/memcache/ \
+    && git reset --hard $MEMCACHE_REVISION \
+    && phpize \
+    && ./configure && make && make install \
+    && rm -rf /tmp/memcache/ \
     && docker-php-source delete \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps
-
-# Install additional packages
-RUN apt-get update && apt-get install -y git msmtp-mta openssh-client --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # Install composer and put binary into $PATH
 RUN curl -sS https://getcomposer.org/installer | php \
@@ -88,36 +97,6 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get install -y nodejs build-essential
 
 RUN apt-get install -y rsync
-
-
-# Install php extensions
-RUN buildDeps=" \
-        libmemcached-dev \
-        librabbitmq-dev \
-        zlib1g-dev \
-    " \
-    && phpModules=" \
-        xdebug \
-    " \
-    && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
-    && apt-get install -y $buildDeps --no-install-recommends \
-    && docker-php-source extract \
-    && cd /usr/src/php/ext/ \
-    && curl -L http://xdebug.org/files/xdebug-$XDEBUG_VERSION.tgz | tar -zxf - \
-    && mv xdebug-$XDEBUG_VERSION xdebug \
-    && docker-php-ext-install $phpModules \
-    && printf "\n" | pecl install amqp \
-    && for ext in $phpModules; do \
-           rm -f /usr/local/etc/php/conf.d/docker-php-ext-$ext.ini; \
-       done \
-    && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
-    && cd /tmp/memcache/ \
-    && git reset --hard df7735e \
-    && phpize \
-    && ./configure && make && make install \
-    && rm -rf /tmp/memcache/ \
-    && docker-php-source delete \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
