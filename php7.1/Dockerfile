@@ -92,11 +92,7 @@ RUN curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar \
     && mv phpcbf.phar /usr/local/bin/ \
     && ln -s /usr/local/bin/phpcbf.phar /usr/local/bin/phpcbf
 
-# Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-    && apt-get install -y nodejs build-essential
-
-RUN apt-get install -y rsync
+RUN apt-get install -y rsync && rm -r /var/lib/apt/lists/*
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
