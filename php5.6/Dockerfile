@@ -1,10 +1,8 @@
-FROM php:7.0
+FROM php:5.6
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
 ENV XDEBUG_VERSION 2.5.0
-
-ENV MEMCACHE_REVISION 'df7735e'
 
 # Install additional packages
 RUN apt-get update && apt-get install -y git msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
@@ -37,10 +35,10 @@ RUN buildDeps=" \
         zlib1g-dev \
     " \
     && phpModules=" \
-        bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mcrypt mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
+        bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mcrypt mssql mysql mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
     " \
     && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
-    && apt-get update && apt-get install -y libc-client2007e libenchant1c2a libfreetype6 libicu52 libjpeg62-turbo libmcrypt4 libpng12-0 libpq5 libsybdb5 libtidy-0.99-0 libx11-6 libxpm4 libxslt1.1 snmp --no-install-recommends \
+    && apt-get update && apt-get install -y libc-client2007e libenchant1c2a libfreetype6 libicu52 libjpeg62-turbo libmcrypt4 libmemcachedutil2 libpng12-0 libpq5 libsybdb5 libtidy-0.99-0 libx11-6 libxpm4 libxslt1.1 snmp --no-install-recommends \
     && apt-get install -y $buildDeps --no-install-recommends \
     && docker-php-source extract \
     && cd /usr/src/php/ext/ \
@@ -57,14 +55,10 @@ RUN buildDeps=" \
     && docker-php-ext-install $phpModules \
     && printf "\n" | pecl install amqp \
     && printf "\n" | pecl install memcache \
+    && printf "\n" | pecl install memcached-2.2.0 \
+    && printf "\n" | pecl install mongo \
     && pecl install mongodb \
-    && pecl install redis \
-    && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
-    && cd /tmp/memcache/ \
-    && git reset --hard $MEMCACHE_REVISION \
-    && phpize \
-    && ./configure && make && make install \
-    && rm -rf /tmp/memcache/ \
+    && pecl install redis-2.2.8 \
     && for ext in $phpModules; do \
            rm -f /usr/local/etc/php/conf.d/docker-php-ext-$ext.ini; \
        done \
