@@ -2,7 +2,7 @@ FROM php:7.1
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
-ENV XDEBUG_VERSION 2.5.0
+ENV XDEBUG_VERSION 2.5.1
 
 ENV MEMCACHE_REVISION 'df7735e'
 
@@ -41,7 +41,7 @@ RUN buildDeps=" \
         bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mcrypt mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
     " \
     && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
-    && apt-get update \
+    && apt-get update && apt-get install -y libc-client2007e libenchant1c2a libfreetype6 libicu52 libjpeg62-turbo libmcrypt4 libpng12-0 libpq5 libsybdb5 libtidy-0.99-0 libx11-6 libxpm4 libxslt1.1 snmp --no-install-recommends \
     && apt-get install -y $buildDeps --no-install-recommends \
     && docker-php-source extract \
     && cd /usr/src/php/ext/ \
