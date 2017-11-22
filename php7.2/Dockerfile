@@ -1,4 +1,4 @@
-FROM php:7.2
+FROM php:7.2-rc
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
@@ -6,11 +6,12 @@ ENV XDEBUG_VERSION 2.5.1
 
 ENV MEMCACHE_REVISION 'e702b5f'
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-
-
 # Install additional packages
-RUN apt-get update && apt-get install -y git msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
+
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+    && apt-get install -y nodejs --no-install-recommends \
+    && rm -r /var/lib/apt/lists/*
 
 # Install php extensions
 RUN buildDeps=" \
@@ -26,7 +27,7 @@ RUN buildDeps=" \
         libldap2-dev \
         libmcrypt-dev \
         libmemcached-dev \
-        libpng12-dev \
+        libpng-dev \
         libpq-dev \
         libpspell-dev \
         librabbitmq-dev \
@@ -40,10 +41,10 @@ RUN buildDeps=" \
         zlib1g-dev \
     " \
     && phpModules=" \
-        bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mcrypt mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
+        bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
     " \
     && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
-    && apt-get update && apt-get install -y libc-client2007e libenchant1c2a libfreetype6 libicu52 libjpeg62-turbo libmcrypt4 libpng12-0 libpq5 libsybdb5 libtidy-0.99-0 libx11-6 libxpm4 libxslt1.1 snmp --no-install-recommends \
+    && apt-get update && apt-get install -y libc-client2007e libenchant1c2a libfreetype6 libjpeg62-turbo libmcrypt4 libpq5 libsybdb5 libx11-6 libxpm4 libxslt1.1 snmp --no-install-recommends \
     && apt-get install -y $buildDeps --no-install-recommends \
     && docker-php-source extract \
     && cd /usr/src/php/ext/ \

@@ -6,10 +6,10 @@ ENV XDEBUG_VERSION 2.5.5
 
 ENV MEMCACHE_REVISION 'df7735e'
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-
 # Install additional packages
-RUN apt-get update && apt-get install -y git msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
+
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 
 # Install php extensions
 RUN buildDeps=" \
