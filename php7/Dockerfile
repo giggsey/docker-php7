@@ -4,7 +4,7 @@ MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
 ENV XDEBUG_VERSION 2.5.5
 
-ENV MEMCACHE_REVISION 'df7735e'
+ENV MEMCACHE_REVISION 'e702b5f'
 
 # Install additional packages
 RUN apt-get update && apt-get install -y git msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
