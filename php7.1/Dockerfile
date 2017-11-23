@@ -9,7 +9,9 @@ ENV MEMCACHE_REVISION 'df7735e'
 # Install additional packages
 RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+    && apt-get install -y nodejs --no-install-recommends \
+    && rm -r /var/lib/apt/lists/*
 
 # Install php extensions
 RUN buildDeps=" \
