@@ -56,7 +56,6 @@ RUN buildDeps=" \
     && docker-php-ext-configure ldap --with-ldap-sasl \
     && docker-php-ext-install $phpModules \
     && printf "\n" | pecl install amqp \
-    && printf "\n" | pecl install memcache \
     && pecl install mongodb \
     && pecl install redis \
     && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
