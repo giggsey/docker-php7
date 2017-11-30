@@ -1,4 +1,4 @@
-FROM php:7.2-rc
+FROM php:7.2
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
