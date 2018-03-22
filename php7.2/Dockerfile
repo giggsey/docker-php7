@@ -72,6 +72,9 @@ RUN buildDeps=" \
     && docker-php-source delete \
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps
 
+RUN apt-get update && apt-get install -y libpng-dev --no-install-recommends \
+    && rm -r /var/lib/apt/lists/*
+
 # Install composer and put binary into $PATH
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/ \
