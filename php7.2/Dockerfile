@@ -27,7 +27,6 @@ RUN buildDeps=" \
         libldap2-dev \
         libmcrypt-dev \
         libmemcached-dev \
-        libpng-dev \
         libpq-dev \
         libpspell-dev \
         librabbitmq-dev \
