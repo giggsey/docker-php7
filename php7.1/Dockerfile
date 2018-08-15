@@ -7,10 +7,19 @@ ENV XDEBUG_VERSION 2.5.5
 ENV MEMCACHE_REVISION 'df7735e'
 
 # Install additional packages
-RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client software-properties-common rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get install -y nodejs --no-install-recommends \
+    && rm -r /var/lib/apt/lists/*
+
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+    && add-apt-repository \
+          "deb [arch=amd64] https://download.docker.com/linux/debian \
+          $(lsb_release -cs) \
+          stable" \
+    && apt-get update \
+    && apt-get install -y docker-ce --no-install-recommends \
     && rm -r /var/lib/apt/lists/*
 
 # Install php extensions
