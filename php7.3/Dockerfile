@@ -1,31 +1,16 @@
-FROM php:7.2
+FROM php:7.3-rc
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
-ENV XDEBUG_VERSION 2.6.1
+ENV XDEBUG_VERSION 2.7.0-beta1
 
 ENV MEMCACHE_REVISION 'e702b5f'
 
 # Install additional packages
-RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client software-properties-common rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get install -y nodejs --no-install-recommends \
-    && rm -r /var/lib/apt/lists/*
-
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
-    && apt-get update \
-    && apt-get install -y yarn --no-install-recommends \
-    && rm -r /var/lib/apt/lists/*
-
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
-    && add-apt-repository \
-          "deb [arch=amd64] https://download.docker.com/linux/debian \
-          $(lsb_release -cs) \
-          stable" \
-    && apt-get update \
-    && apt-get install -y docker-ce --no-install-recommends \
     && rm -r /var/lib/apt/lists/*
 
 # Install php extensions
@@ -58,7 +43,7 @@ RUN buildDeps=" \
         bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
     " \
     && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
-    && apt-get update && apt-get install -y libc-client2007e libpng-dev libenchant1c2a librabbitmq4 libfreetype6 libjpeg62-turbo libmcrypt4 libpq5 libsybdb5 libx11-6 libxpm4 libxslt1.1 snmp --no-install-recommends \
+    && apt-get update && apt-get install -y libc-client2007e libpng-dev libenchant1c2a libfreetype6 libjpeg62-turbo libmcrypt4 libpq5 libsybdb5 libx11-6 libxpm4 libzip-dev libxslt1.1 snmp --no-install-recommends \
     && apt-get install -y $buildDeps --no-install-recommends \
     && docker-php-source extract \
     && cd /usr/src/php/ext/ \
