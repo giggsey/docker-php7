@@ -4,13 +4,19 @@ MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
 ENV XDEBUG_VERSION 2.7.0-beta1
 
-ENV MEMCACHE_REVISION 'e702b5f'
+ENV MEMCACHE_REVISION '09e21a6'
 
 # Install additional packages
 RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get install -y nodejs --no-install-recommends \
+    && rm -r /var/lib/apt/lists/*
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y yarn --no-install-recommends \
     && rm -r /var/lib/apt/lists/*
 
 # Install php extensions
@@ -63,7 +69,7 @@ RUN buildDeps=" \
     && for ext in $phpModules; do \
            rm -f /usr/local/etc/php/conf.d/docker-php-ext-$ext.ini; \
        done \
-    && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
+    && git clone https://github.com/remicollet/pecl-memcache.git /tmp/memcache/ \
     && cd /tmp/memcache/ \
     && git reset --hard $MEMCACHE_REVISION \
     && phpize \
