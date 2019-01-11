@@ -9,7 +9,7 @@ ENV MEMCACHE_REVISION 'e702b5f'
 # Install additional packages
 RUN apt-get update && apt-get install -y git gnupg2 msmtp-mta openssh-client software-properties-common rsync --no-install-recommends && rm -r /var/lib/apt/lists/*
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && apt-get install -y nodejs --no-install-recommends \
     && rm -r /var/lib/apt/lists/*
 
