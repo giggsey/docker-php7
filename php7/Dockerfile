@@ -2,7 +2,7 @@ FROM php:7.0
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
-ENV XDEBUG_VERSION 2.5.5
+ENV XDEBUG_VERSION 2.7.1
 
 ENV MEMCACHE_REVISION 'e702b5f'
 
@@ -78,6 +78,16 @@ RUN buildDeps=" \
     && printf "\n" | pecl install amqp \
     && pecl install mongodb \
     && pecl install redis \
+    && pecl install igbinary \
+    # Install memcached (manually build in order to be able to enable igbinary)
+    && echo no | pecl install -o --nobuild memcached \
+    && cd /tmp/pear/temp/memcached/ \
+    && phpize \
+    && ./configure --enable-memcached-igbinary \
+    && make \
+    && make install \
+    && cd ~ \
+    && rm -rf /tmp/pear/temp/memcached/ \
     && git clone https://github.com/websupport-sk/pecl-memcache.git /tmp/memcache/ \
     && cd /tmp/memcache/ \
     && git reset --hard $MEMCACHE_REVISION \

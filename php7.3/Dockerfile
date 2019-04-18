@@ -2,7 +2,7 @@ FROM php:7.3
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
-ENV XDEBUG_VERSION 2.7.0-beta1
+ENV XDEBUG_VERSION 2.7.1
 
 ENV MEMCACHE_REVISION '09e21a6'
 
@@ -78,6 +78,16 @@ RUN buildDeps=" \
     && for ext in $phpModules; do \
            rm -f /usr/local/etc/php/conf.d/docker-php-ext-$ext.ini; \
        done \
+    && pecl install igbinary \
+    # Install memcached (manually build in order to be able to enable igbinary)
+    && echo no | pecl install -o --nobuild memcached \
+    && cd /tmp/pear/temp/memcached/ \
+    && phpize \
+    && ./configure --enable-memcached-igbinary \
+    && make \
+    && make install \
+    && cd ~ \
+    && rm -rf /tmp/pear/temp/memcached/ \
     && git clone https://github.com/remicollet/pecl-memcache.git /tmp/memcache/ \
     && cd /tmp/memcache/ \
     && git reset --hard $MEMCACHE_REVISION \
