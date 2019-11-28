@@ -1,4 +1,4 @@
-FROM php:7.3
+FROM php:7.4
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
@@ -42,6 +42,7 @@ RUN buildDeps=" \
         libldap2-dev \
         libmcrypt-dev \
         libmemcached-dev \
+        libonig-dev \
         libpq-dev \
         libpspell-dev \
         librabbitmq-dev \
@@ -55,7 +56,7 @@ RUN buildDeps=" \
         zlib1g-dev \
     " \
     && phpModules=" \
-        bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy wddx xmlrpc xsl zip xdebug \
+        bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy xmlrpc xsl zip xdebug \
     " \
     && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
     && apt-get update && apt-get install -y libc-client2007e libpng-dev libenchant1c2a libfreetype6 libmemcached11 libmemcachedutil2 libjpeg62-turbo libmcrypt4 libpq5 libsybdb5 libx11-6 libxpm4 libzip-dev zip unzip libzip4 libxslt1.1 snmp --no-install-recommends \
@@ -68,8 +69,8 @@ RUN buildDeps=" \
     && ln -s /usr/lib/x86_64-linux-gnu/libldap_r.a /usr/lib/libldap_r.a \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a \
     && ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-xpm-dir=/usr/include/ \
-    && docker-php-ext-configure imap --with-imap --with-kerberos --with-imap-ssl \
+    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg-dir=/usr/include/ --with-xpm-dir=/usr/include/ \
+    && PHP_OPENSSL=yes docker-php-ext-configure imap --with-imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-configure ldap --with-ldap-sasl \
     && docker-php-ext-install $phpModules \
     && printf "\n" | pecl install amqp \
