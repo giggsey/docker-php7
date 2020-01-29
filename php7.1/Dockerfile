@@ -2,7 +2,7 @@ FROM php:7.1
 
 MAINTAINER Joshua Gigg <giggsey@gmail.com>
 
-ENV XDEBUG_VERSION 2.7.1
+ENV XDEBUG_VERSION 2.9.1
 
 ENV MEMCACHE_REVISION 'df7735e'
 
