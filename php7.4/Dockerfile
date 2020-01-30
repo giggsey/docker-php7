@@ -59,7 +59,7 @@ RUN buildDeps=" \
         bcmath bz2 calendar dba enchant exif ftp gd gettext gmp imap intl ldap mbstring mysqli opcache pcntl pdo pdo_dblib pdo_mysql pdo_pgsql pgsql pspell shmop snmp soap sockets sysvmsg sysvsem sysvshm tidy xmlrpc xsl zip xdebug \
     " \
     && echo "deb http://httpredir.debian.org/debian jessie contrib non-free" > /etc/apt/sources.list.d/additional.list \
-    && apt-get update && apt-get install -y libc-client2007e libpng-dev libenchant1c2a libfreetype6 libmemcached11 libmemcachedutil2 libjpeg62-turbo libmcrypt4 libpq5 libsybdb5 libx11-6 libxpm4 libzip-dev zip unzip libzip4 libxslt1.1 snmp --no-install-recommends \
+    && apt-get update && apt-get install -y libc-client2007e libpng-dev libenchant1c2a librabbitmq4 libfreetype6 libmemcached11 libmemcachedutil2 libjpeg62-turbo libmcrypt4 libpq5 libsybdb5 libx11-6 libxpm4 libzip-dev zip unzip libzip4 libxslt1.1 snmp --no-install-recommends \
     && apt-get install -y $buildDeps --no-install-recommends \
     && docker-php-source extract \
     && cd /usr/src/php/ext/ \
